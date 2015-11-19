@@ -2,49 +2,95 @@
 
 //defines
 #define ONE_WIRE_BUS D2
-//OneWire oneWire(ONE_WIRE_BUS);
-//DallasTemperature sensor(&oneWire);
-
-#define VARIABLE_ID "55cbc6f2762542069b2798a9"  // temp 1
-#define TEMP2_VARIABLE_ID "55cbd3277625421c8977ecea"
 #define TOKEN "hsFRLnMcucOZlfLsQbH9BRbJpveccOc37ksq7eLOtjztxoEpZDA1D2wnWiuP"
 #define UBIVARSIZE 24
 #define PUSHFREQ 300
 #define FILENAME "holiday_road"
-#define MYVERSION "0.7.02"
+#define MYVERSION "0.7.03"
 #define GETTEMPFEQ 5
 #define PUSHTOUBIFLAG 1
 
+//Globals
+bool debug = true;
+  bool gettempflag = true;
+  char* ubivar[]={"564a6d137625425cf86b4ce4", "xxx", "xxx","xxx"};
+  char resultstr[64];
+  int button = D4;
+  int buttonvalue = 0;
+  int displayMode = 2;
+  int deviceCount, lastDeviceCount, lastime, mycounter,thistime, lasttime = 0;
+  int prevPos = 0;
+  int value = 0;
+  int encoderA = A0;
+  int encoderB = A1;
+  int mydelay = 250;
+  int relay = D3;
+  float temperature = 0.0;
+  int relayHoldDown = 30000;
+  volatile bool A_set = false;
+  volatile bool B_set = false;
+  volatile int encoderPos = 0;
 
-
-
+  http_header_t headers[] = {
+        { "Content-Type", "application/json" },
+        { "X-Auth-Token" , TOKEN },
+      { NULL, NULL } // NOTE: Always terminate headers will NULL
+  };
+  http_request_t request;
+  http_response_t response;
 
 //Prototypes
 char *formatTempToBody(float temperature, int tempIndex);
-String convertMillisToHuman(int ms);
-void debugSerial(int i );
-void dispatchEncoder();
-void doEncoderA();
-void doEncoderB();
-void expireRelay();
-double freqChecker();
-int getDeviceCount();
-void oDispatch(int tempIndex, float mytemp);
-void oPrintInfo();
-void oPrintInfo5();
-void oPrintNoDevices();
-void oPrintTemp(int index, float mytemp);
-void oPrintTemp2(int index, float mytemp);
-void oPrintTemp3(int index, float mytemp);
-void printAddress(DeviceAddress deviceAddress);
-int printEEPROMFunc(String command);
-int queryDevices(String command);
-int regDevice(String command);
-int regDeviceFunc(String command);
-int relayFunc(String command);
-int setModeFunc(String command);
-int setmode(String command);
-void temperatureJob();
+  String convertMillisToHuman(int ms);
+  void debugSerial(int i );
+  void dispatchEncoder();
+  void doEncoderA();
+  void doEncoderB();
+  void expireRelay();
+  double freqChecker();
+  int getDeviceCount();
+  void oDispatch(int tempIndex, float mytemp);
+  void oPrintInfo();
+  void oPrintInfo5();
+  void oPrintNoDevices();
+  void oPrintTemp(int index, float mytemp);
+  void oPrintTemp2(int index, float mytemp);
+  void oPrintTemp3(int index, float mytemp);
+  void printAddress(DeviceAddress deviceAddress);
+  int printEEPROMFunc(String command);
+  int queryDevices(String command);
+  int regDevice(String command);
+  int regDeviceFunc(String command);
+  Timer relayTimer(relayHoldDown, expireRelay);
+  int relayFunc(String command);
+  int setModeFunc(String command);
+  int setmode(String command);
+  void temperatureJob();
+
+
+//Declarations
+MicroOLED oled;
+ OneWire oneWire(ONE_WIRE_BUS);
+ DallasTemperature sensor(&oneWire);
+ HttpClient http;
+
+   //devices
+    // encolusre address   deviceIndexArray[0]:  28 7E F7 25 03 00 00 77
+    DeviceAddress deviceIndexArray[5];  //dynamic Array
+   //  DeviceAddress outsideAddress = { 0x28, 0xe, 0x52, 0x58, 0x6, 0x0, 0x0, 0xe };
+    //DeviceAddress floorAddress = { 0x28, 0x56, 0xB1, 0x3A, 0x06, 0x00, 0x00, 0x82 };
+    //DeviceAddress pitAddress = { 0x28, 0x31, 0x26, 0x59, 0x06, 0x00, 0x00, 0x3A };
+    DeviceAddress boardAddress = { 0x28, 0x49, 0x2E, 0xE3, 0x02, 0x00, 0x00, 0x29 };
+    DeviceAddress*  deviceAddressArray[1] =  { &boardAddress } ;
+    //String deviceNames[4]= { "out", "flr", "pit", "brd" };
+    String deviceNames[1]= { "brd" };
+
+
+
+
+
+
+
 
 
 /* Device Addresses

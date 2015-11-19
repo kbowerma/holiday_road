@@ -1,5 +1,5 @@
 /* 8.12.2015 Kyle Bowerman
-* Last updated on 9.2.2015
+* Last updated on 11.19.2015
 * sparkcore temprature sensors to UBidots
 * from: https://particle.hackster.io/AgustinP/logging-temperature-data-using-the-spark-core
 * from: spark-temp, OLEDTEST, 6SPARKTEMP
@@ -17,54 +17,6 @@
  #include "lib/OneWire/OneWire.h"
  #include "lib/SparkDallas/spark-dallas-temperature.h"
  #include "holiday_road.h"
-
-//Declarations
-MicroOLED oled;
- OneWire oneWire(ONE_WIRE_BUS);
- DallasTemperature sensor(&oneWire);
- HttpClient http;
-
-//Globals
-bool debug = true;
-  bool gettempflag = true;
-  char* ubivar[]={"564a6d137625425cf86b4ce4", "xxx", "xxx","xxx"};
-  char resultstr[64];
-  int button = D4;
-  int buttonvalue = 0;
-  int displayMode = 2;
-  int deviceCount, lastDeviceCount, lastime, mycounter,thistime, lasttime = 0;
-  int prevPos = 0;
-  int value = 0;
-  int encoderA = A0;
-  int encoderB = A1;
-  int mydelay = 250;
-  int relay = D3;
-  float temperature = 0.0;
-  int relayHoldDown = 30000;
-
- //devices
-  // encolusre address   deviceIndexArray[0]:  28 7E F7 25 03 00 00 77
-  DeviceAddress deviceIndexArray[5];  //dynamic Array
- //  DeviceAddress outsideAddress = { 0x28, 0xe, 0x52, 0x58, 0x6, 0x0, 0x0, 0xe };
-  //DeviceAddress floorAddress = { 0x28, 0x56, 0xB1, 0x3A, 0x06, 0x00, 0x00, 0x82 };
-  //DeviceAddress pitAddress = { 0x28, 0x31, 0x26, 0x59, 0x06, 0x00, 0x00, 0x3A };
-  DeviceAddress boardAddress = { 0x28, 0x49, 0x2E, 0xE3, 0x02, 0x00, 0x00, 0x29 };
-  DeviceAddress*  deviceAddressArray[1] =  { &boardAddress } ;
-  //String deviceNames[4]= { "out", "flr", "pit", "brd" };
-  String deviceNames[1]= { "brd" };
-
-  http_header_t headers[] = {
-        { "Content-Type", "application/json" },
-        { "X-Auth-Token" , TOKEN },
-      { NULL, NULL } // NOTE: Always terminate headers will NULL
-  };
-  http_request_t request;
-  http_response_t response;
-
-  volatile bool A_set = false;
-  volatile bool B_set = false;
-  volatile int encoderPos = 0;
-  Timer relayTimer(relayHoldDown, expireRelay);
 
 
 void setup()
