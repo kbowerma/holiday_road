@@ -98,7 +98,7 @@ void loop()
       temperatureJob();  // do the main temprature job
     }
     //  I think this is wrong
-    //lastDeviceCount = getDeviceCount();  // used to detect
+    // lastDeviceCount = getDeviceCount();  // used to detect
   }
   buttonvalue =  digitalRead(button);
   if( debug ) {
@@ -434,7 +434,7 @@ void temperatureJob() {
         Serial << "gotTemp() = "  << i << " " << gotTemp << endl;
         request.body = formatTempToBody(gotTemp, i);
       //  if (mycounter % PUSHFREQ == 0  && PUSHTOUBIFLAG == 1 ) {
-       if (mycounter % PUSHFREQ == 0  && PUSHTOUBIFLAG == 1) {
+       if (mycounter % PUSHFREQ == 0  && PUSHTOUBIFLAG == 1 ) {
             String mypath = String("/api/v1.6/variables/");
             mypath.concat(ubivar[i]);
             mypath.concat("/values");

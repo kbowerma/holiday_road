@@ -87,12 +87,6 @@ MicroOLED oled;
 
 
 
-
-
-
-
-
-
 /* Device Addresses
     //insideThermometer = { 0x28, 0x1D, 0x39, 0x31, 0x2, 0x0, 0x0, 0xF0 };
     Device Index 0 28 56 B1 3A 06 00 00 82
