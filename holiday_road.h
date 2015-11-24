@@ -6,7 +6,7 @@
 #define UBIVARSIZE 24
 #define PUSHFREQ 300
 #define FILENAME "holiday_road"
-#define MYVERSION "0.7.13"
+#define MYVERSION "0.7.14"
 #define GETTEMPFEQ 15
 #define PUSHTOUBIFLAG 1
 

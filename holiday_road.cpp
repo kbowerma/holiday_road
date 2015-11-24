@@ -4,6 +4,7 @@
 * from: https://particle.hackster.io/AgustinP/logging-temperature-data-using-the-spark-core
 * from: spark-temp, OLEDTEST, 6SPARKTEMP
 * 11.23.2015 created realy screen  (vx.x13)
+*            push button on realy screen  (vx.x14)
 * purpose:
 *   1.  uses hardcoded address in array instead of calling by index.
 *   2.  fix getting, prinint and pushing temp values when they are disconnected (-196)
@@ -239,6 +240,11 @@ void oPrintNoDevices() {
 }
 
 void oPrintRelayMode() {
+  if ( buttonvalue == 0 ) {
+    // calling relayFunc("on"); crashes so replicating function
+    digitalWrite(relay, HIGH);
+    relayTimer.start();
+  }
   oled.clear(PAGE);
   oled.setCursor(0,0);
   oled.setFontType(1);
