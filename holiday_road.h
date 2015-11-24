@@ -6,8 +6,8 @@
 #define UBIVARSIZE 24
 #define PUSHFREQ 300
 #define FILENAME "holiday_road"
-#define MYVERSION "0.7.03"
-#define GETTEMPFEQ 5
+#define MYVERSION "0.7.13"
+#define GETTEMPFEQ 15
 #define PUSHTOUBIFLAG 1
 
 //Globals
@@ -52,6 +52,7 @@ char *formatTempToBody(float temperature, int tempIndex);
   void oDispatch(int tempIndex, float mytemp);
   void oPrintInfo();
   void oPrintInfo5();
+  void oPrintRelayMode();
   void oPrintNoDevices();
   void oPrintTemp(int index, float mytemp);
   void oPrintTemp2(int index, float mytemp);
