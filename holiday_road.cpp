@@ -6,6 +6,7 @@
 * 11.23.2015 created realy screen  (vx.x13)
 *            push button on realy screen  (vx.x14)
 *             moisture on setmode 7 (v0.7.15)
+* 11.24.2015  Stablized enocerPos / displayMode  (v0.7.16)
 * purpose:
 *   1.  uses hardcoded address in array instead of calling by index.
 *   2.  fix getting, prinint and pushing temp values when they are disconnected (-196)
@@ -69,6 +70,9 @@ void setup()
   attachInterrupt(encoderA, doEncoderA, CHANGE);
   attachInterrupt(encoderB, doEncoderB, CHANGE);
 
+  // Check the moisture Timer every M1CHECKFREQ 30000 (30 seconds)
+  //moistureCheck.start();
+
  // temperatureJob();  // do this one time so the first screen gets displayed
 
 
@@ -108,8 +112,8 @@ void loop()
   }
   buttonvalue =  digitalRead(button);
   if( debug ) {
-    Serial << mycounter << " freq: " << freqChecker() << "Hz | enocderPos: ";
-    Serial << encoderPos << " | buttonvalue: " << buttonvalue << endl;
+    Serial <<"count: " << mycounter << " freq: " << freqChecker() << "Hz | enocderPos: ";
+    Serial << encoderPos << " | buttonvalue: " << buttonvalue << " displayMode: " << displayMode << endl;
   }
 
   //encoder
@@ -126,7 +130,7 @@ void loop()
   //                            Don't intrrupt info screens to report no device
   if (deviceCount == 0 && encoderPos < 4 && encoderPos > 0 ) oPrintNoDevices() ;
 
-  lastime = thistime;
+  lastime = thistime;  // for frequency checker
   delay(mydelay);
   thistime = millis();
 
@@ -209,7 +213,8 @@ int getDeviceCount() {
 void oPrintInfo() {
     oled.clear(PAGE);
     oled.setCursor(0,0);
-    oled.print(MYVERSION);
+    //oled.print(MYVERSION);
+    oled << "M1: " << M1PCT ;
     oled.setCursor(0,10);
     oled << freqChecker() << " Hz";
     oled.setCursor(0,20);
@@ -443,17 +448,22 @@ void expireRelay(){
 
 void oPrintMoisture() {
   digitalWrite(M1POWER, HIGH);
-  //int p = map(analogRead(M1),1400,4094,100,1);
-  M1PCT = map(analogRead(M1),1400,4020,100,0);
-  oled.clear(PAGE);
-  oled.setCursor(0,0);
-  oled << "Moist" << endl <<  "   " << analogRead(M1) << endl;
-  oled.setFontType(1);
+   // loop to only check the moisture for 50 cycles
+   for (int i=0; i <= 100; i++){
+    M1PCT = map(analogRead(M1),1400,4020,100,0);
+    oled.clear(PAGE);
+    oled.setCursor(0,0);
+    oled << "Moist" << endl <<  "   " << analogRead(M1) << endl;
+    oled.setFontType(1);
     oled.setCursor(0,21);
-  oled  << M1PCT << "%";
-//  oled.print("x");
-  oled.setFontType(0);
-  oled.display();
+    oled  << M1PCT << "%";
+    oled.setFontType(0);
+    oled.display();
+    delay(10);
+   }
+   displayMode = 4;  // this works but I need to set the encoder postion too
+   encoderPos = 4;
+
 }
 
 int setModeFunc(String command){ // now used for display mode and to toggle debug
@@ -461,6 +471,7 @@ int setModeFunc(String command){ // now used for display mode and to toggle debu
     oled.clear(PAGE);
     oled.display();
     displayMode = command.toInt();
+    encoderPos = displayMode;
     return displayMode;
     }
     if(command == "debug"){

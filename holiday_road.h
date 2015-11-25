@@ -6,11 +6,12 @@
 #define UBIVARSIZE 24
 #define PUSHFREQ 300
 #define FILENAME "holiday_road"
-#define MYVERSION "0.7.15"
+#define MYVERSION "0.7.16"
 #define GETTEMPFEQ 15
 #define PUSHTOUBIFLAG 1
 #define M1 A6
 #define M1POWER D5
+
 
 //Globals
 bool debug = true;
@@ -67,6 +68,7 @@ char *formatTempToBody(float temperature, int tempIndex);
   int regDevice(String command);
   int regDeviceFunc(String command);
   Timer relayTimer(relayHoldDown, expireRelay);
+  //Timer moistureCheck(M1CHECKFREQ, oPrintMoisture);
   int relayFunc(String command);
   int setModeFunc(String command);
   int setmode(String command);
