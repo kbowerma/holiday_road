@@ -6,9 +6,11 @@
 #define UBIVARSIZE 24
 #define PUSHFREQ 300
 #define FILENAME "holiday_road"
-#define MYVERSION "0.7.14"
+#define MYVERSION "0.7.15"
 #define GETTEMPFEQ 15
 #define PUSHTOUBIFLAG 1
+#define M1 A6
+#define M1POWER D5
 
 //Globals
 bool debug = true;
@@ -23,6 +25,7 @@ bool debug = true;
   int value = 0;
   int encoderA = A0;
   int encoderB = A1;
+  int M1PCT = 0;
   int mydelay = 250;
   int relay = D3;
   float temperature = 0.0;
@@ -57,6 +60,7 @@ char *formatTempToBody(float temperature, int tempIndex);
   void oPrintTemp(int index, float mytemp);
   void oPrintTemp2(int index, float mytemp);
   void oPrintTemp3(int index, float mytemp);
+  void oPrintMoisture();
   void printAddress(DeviceAddress deviceAddress);
   int printEEPROMFunc(String command);
   int queryDevices(String command);
@@ -117,18 +121,18 @@ MicroOLED oled;
 *
 *      A0   ENCODER PinA
 *      A1   ENCODER PinB
-*      A2
+*      A2   SPI chip select
 *      A3   OLED SCK
 *      A4
 *      A5   OLED MOSI
-*      A6   -
+*      A6   proposed mositure read
 *      A7
 *      D0
 *      D1
 *      D2   ONEWIRE bus
 *      D3   Relay
 *      D4  Encoder Button
-*      D5
+*      D5   proposed moisture power
 *      D6   OLED D/C
 *      D7   OLED reset
 *

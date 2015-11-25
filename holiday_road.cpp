@@ -1,10 +1,11 @@
 /* 8.12.2015 Kyle Bowerman
-* Last updated on 11.19.2015
+* Last updated on 11.23.2015
 * sparkcore temprature sensors to UBidots
 * from: https://particle.hackster.io/AgustinP/logging-temperature-data-using-the-spark-core
 * from: spark-temp, OLEDTEST, 6SPARKTEMP
 * 11.23.2015 created realy screen  (vx.x13)
 *            push button on realy screen  (vx.x14)
+*             moisture on setmode 7 (v0.7.15)
 * purpose:
 *   1.  uses hardcoded address in array instead of calling by index.
 *   2.  fix getting, prinint and pushing temp values when they are disconnected (-196)
@@ -61,7 +62,10 @@ void setup()
   pinMode(encoderA, INPUT_PULLUP);
   pinMode(encoderB, INPUT_PULLUP);
   pinMode(button,INPUT_PULLUP);
+  pinMode(M1,INPUT_PULLDOWN);
   pinMode(relay, OUTPUT);
+  pinMode(M1POWER, OUTPUT);
+
   attachInterrupt(encoderA, doEncoderA, CHANGE);
   attachInterrupt(encoderB, doEncoderB, CHANGE);
 
@@ -118,6 +122,7 @@ void loop()
   if (encoderPos == 4 )  oPrintInfo();
   if (encoderPos == 5 )  oPrintInfo5();
   if (encoderPos == 6 )  oPrintRelayMode();
+  if (encoderPos == 7 )  oPrintMoisture();
   //                            Don't intrrupt info screens to report no device
   if (deviceCount == 0 && encoderPos < 4 && encoderPos > 0 ) oPrintNoDevices() ;
 
@@ -163,7 +168,7 @@ void debugSerial(int i ) {
 }
 
 void dispatchEncoder(){
-    if (encoderPos > 6 ) encoderPos = 6;
+    if (encoderPos > 7 ) encoderPos = 7;
     if (encoderPos < 0 ) encoderPos = 0;
     setModeFunc(String(encoderPos));
     if (deviceCount > 0 ) temperatureJob();
@@ -219,13 +224,14 @@ void oPrintInfo() {
 }
 
 void oPrintInfo5() {
-  uint32_t freemem = System.freeMemory();
+  //uint32_t freemem = System.freeMemory();
   oled.clear(PAGE);
   oled.setCursor(0,0);
   oled.print(MYVERSION);
   oled.setCursor(0,10);
-  oled << "MEMORY: " << endl << freemem << endl;
-  oled << "BUTTON: " << buttonvalue << endl;
+  //oled << "M: "  << freemem << endl;
+  oled << "Fmem "  <<  System.freeMemory() / 1024 << "k" << endl;
+  oled << "BT " << buttonvalue << " M1 " << M1PCT << endl;
   oled << "sVer:" << System.version().c_str() << endl;
   oled.display();
 }
@@ -273,6 +279,10 @@ void oDispatch(int tempIndex, float temperature) {
     if (displayMode == 4 )  oPrintInfo();
     if (displayMode == 5 )  oPrintInfo5();
     if (displayMode == 6 )  oPrintRelayMode();
+    if (displayMode == 7 )  oPrintMoisture();
+
+    //Turn off moisture Power if not in dsiaplyMode = 7
+    if (displayMode != 7 ) digitalWrite(M1POWER, LOW);
 
   Serial << "oled dispatch called " << endl;
 }
@@ -429,6 +439,21 @@ int relayFunc(String command) {
 void expireRelay(){
   digitalWrite(relay, LOW);
   oPrintRelayMode();
+}
+
+void oPrintMoisture() {
+  digitalWrite(M1POWER, HIGH);
+  //int p = map(analogRead(M1),1400,4094,100,1);
+  M1PCT = map(analogRead(M1),1400,4020,100,0);
+  oled.clear(PAGE);
+  oled.setCursor(0,0);
+  oled << "Moist" << endl <<  "   " << analogRead(M1) << endl;
+  oled.setFontType(1);
+    oled.setCursor(0,21);
+  oled  << M1PCT << "%";
+//  oled.print("x");
+  oled.setFontType(0);
+  oled.display();
 }
 
 int setModeFunc(String command){ // now used for display mode and to toggle debug
