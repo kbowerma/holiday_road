@@ -11,6 +11,7 @@
 #define PUSHTOUBIFLAG 1
 #define M1 A6
 #define M1POWER D5
+#define M1CHECKFREQ 30000
 
 
 //Globals
@@ -20,7 +21,7 @@ bool debug = true;
   char resultstr[64];
   int button = D4;
   int buttonvalue = 0;
-  int displayMode = 2;
+  int displayMode = 4;
   int deviceCount, lastDeviceCount, lastime, mycounter,thistime, lasttime = 0;
   int prevPos = 0;
   int value = 0;

@@ -7,6 +7,7 @@
 *            push button on realy screen  (vx.x14)
 *             moisture on setmode 7 (v0.7.15)
 * 11.24.2015  Stablized enocerPos / displayMode  (v0.7.16)
+* 11.24.2015  Trying to get timer for moisture checker, kills encoder #3
 * purpose:
 *   1.  uses hardcoded address in array instead of calling by index.
 *   2.  fix getting, prinint and pushing temp values when they are disconnected (-196)
@@ -427,6 +428,8 @@ int queryDevices(String command) {
 }
 
 int relayFunc(String command) {
+  // need to set the displayMode and encoderPos otherwise it wont display
+  displayMode = encoderPos = 6;
   if(command == "on" ) {
     digitalWrite(relay, HIGH);
     oPrintRelayMode();
