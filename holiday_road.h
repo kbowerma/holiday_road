@@ -1,17 +1,15 @@
-
-
 //defines
 #define ONE_WIRE_BUS D2
 #define TOKEN "hsFRLnMcucOZlfLsQbH9BRbJpveccOc37ksq7eLOtjztxoEpZDA1D2wnWiuP"
 #define UBIVARSIZE 24
 #define PUSHFREQ 300
 #define FILENAME "holiday_road"
-#define MYVERSION "0.7.16"
+#define MYVERSION "0.8.16"
 #define GETTEMPFEQ 15
 #define PUSHTOUBIFLAG 1
 #define M1 A6
 #define M1POWER D5
-#define M1CHECKFREQ 30000
+
 
 
 //Globals
@@ -32,6 +30,7 @@ bool debug = true;
   int relay = D3;
   float temperature = 0.0;
   int relayHoldDown = 30000;
+  int moistureCheckerFreq = 7200;
   volatile bool A_set = false;
   volatile bool B_set = false;
   volatile int encoderPos = 0;
@@ -55,21 +54,12 @@ char *formatTempToBody(float temperature, int tempIndex);
   double freqChecker();
   int getDeviceCount();
   void oDispatch(int tempIndex, float mytemp);
-  void oPrintInfo();
-  void oPrintInfo5();
-  void oPrintRelayMode();
-  void oPrintNoDevices();
-  void oPrintTemp(int index, float mytemp);
-  void oPrintTemp2(int index, float mytemp);
-  void oPrintTemp3(int index, float mytemp);
-  void oPrintMoisture();
   void printAddress(DeviceAddress deviceAddress);
   int printEEPROMFunc(String command);
   int queryDevices(String command);
   int regDevice(String command);
   int regDeviceFunc(String command);
   Timer relayTimer(relayHoldDown, expireRelay);
-  //Timer moistureCheck(M1CHECKFREQ, oPrintMoisture);
   int relayFunc(String command);
   int setModeFunc(String command);
   int setmode(String command);
