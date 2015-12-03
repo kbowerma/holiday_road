@@ -52,6 +52,7 @@ void setup()
   sensor.begin();
 
   Particle.variable("count_devices", &deviceCount, INT);
+  Particle.variable("m1pct",M1PCT);
   Particle.function("q", queryDevices);
   Particle.function("setmode", setModeFunc);
   Particle.function("printEEProm", printEEPROMFunc);
