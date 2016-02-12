@@ -51,8 +51,10 @@ void setup()
   Serial.begin(9600);
   sensor.begin();
 
-  Particle.variable("count_devices", &deviceCount, INT);
+  Particle.variable("devices",deviceCount);
   Particle.variable("m1pct",M1PCT);
+  Particle.variable("version",MYVERSION);
+  Particle.variable("file",FILENAME);
   Particle.function("q", queryDevices);
   Particle.function("setmode", setModeFunc);
   Particle.function("printEEProm", printEEPROMFunc);
@@ -331,22 +333,35 @@ int relayFunc(String command) {
   // need to set the displayMode and encoderPos otherwise it wont display
   displayMode = encoderPos = 6;
   if(command == "on" ) {
+    //first check the moisture
+    oPrintMoisture();  // will also publish
+    // Now I have to return to postion 6 since the check mositure wants me to got ot 4
+    displayMode = encoderPos = 6;
     digitalWrite(relay, HIGH);
     oPrintRelayMode();
+    Particle.publish("relay", "API on");
     relayTimer.start();
     return 1;
   }
   if(command == "off") {
     expireRelay();
     oPrintRelayMode();
+    Particle.publish("relay", "API off");
+    relayTimer.stop();
     return 0;
   }
 
 }
 
 void expireRelay(){
+  //now check the moisture again
+  oPrintMoisture();  // will also publish
+  //and return to posttion 6
+  displayMode = encoderPos = 6;
   digitalWrite(relay, LOW);
   oPrintRelayMode();
+  Particle.publish("relay", "expired off");
+  relayTimer.stop();
 }
 
 int setModeFunc(String command){ // now used for display mode and to toggle debug

@@ -4,7 +4,7 @@
 #define UBIVARSIZE 24
 #define PUSHFREQ 300
 #define FILENAME "holiday_road"
-#define MYVERSION "0.8.17"
+#define MYVERSION "0.8.19"
 #define GETTEMPFEQ 15
 #define PUSHTOUBIFLAG 1
 #define M1 A6
@@ -20,7 +20,8 @@ bool debug = true;
   int button = D4;
   int buttonvalue = 0;
   int displayMode = 4;
-  int deviceCount, lastDeviceCount, lastime, mycounter,thistime, lasttime = 0;
+  int deviceCount = 0;
+  int lastDeviceCount, lastime, mycounter,thistime, lasttime = 0;
   int prevPos = 0;
   int value = 0;
   int encoderA = A0;

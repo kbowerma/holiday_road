@@ -56,6 +56,7 @@
 
   void oPrintRelayMode() {
     if ( buttonvalue == 0 ) {
+      Particle.publish("relay", "Button on");
       // calling relayFunc("on"); crashes so replicating function
       digitalWrite(relay, HIGH);
       relayTimer.start();
@@ -136,5 +137,6 @@
      }
      displayMode = 4;  // this works but I need to set the encoder postion too
      encoderPos = 4;
+     Particle.publish("moisture",  String(M1PCT));
 
   }
