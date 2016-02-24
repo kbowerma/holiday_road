@@ -1,14 +1,15 @@
 //defines
 #define ONE_WIRE_BUS D2
-#define TOKEN "hsFRLnMcucOZlfLsQbH9BRbJpveccOc37ksq7eLOtjztxoEpZDA1D2wnWiuP"
 #define UBIVARSIZE 24
 #define PUSHFREQ 300
 #define FILENAME "holiday_road"
-#define MYVERSION "0.8.19"
-#define GETTEMPFEQ 15
+#define MYVERSION "0.8.21c"
+#define GETTEMPFEQ 15  // both PUSHFREQ and GETTEMPFEQ have to be true to the cycle count to push to ubidots.
 #define PUSHTOUBIFLAG 1
 #define M1 A6
 #define M1POWER D5
+
+#include "lib/bowermanKeys.h"
 
 
 
@@ -43,6 +44,13 @@ bool debug = true;
   };
   http_request_t request;
   http_response_t response;
+  http_header_t mongo_headers[] = {
+        { "Content-Type", "application/json" },
+      { NULL, NULL } // NOTE: Always terminate headers will NULL
+  };
+  http_request_t mongo_request;
+  http_response_t mongo_response;
+
 
 //Prototypes
 char *formatTempToBody(float temperature, int tempIndex);
