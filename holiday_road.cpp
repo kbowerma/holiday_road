@@ -9,6 +9,8 @@
 * 11.24.2015  Stablized enocerPos / displayMode  (v0.7.16)
 * 11.24.2015  Trying to get timer for moisture checker, kills encoder #3
 *             Switch to do every 7200 cycles seems to be stable (v.0.8.16)
+* 2.12.2016   Added mongolab call (hack) via apigee,   need to clean it up into another function
+* 2.24.2016   gotta move the keys out so I can put it on github.
 * purpose:
 *   1.  uses hardcoded address in array instead of calling by index.
 *   2.  fix getting, prinint and pushing temp values when they are disconnected (-196)
@@ -24,6 +26,7 @@
  #include "lib/SparkDallas/spark-dallas-temperature.h"
  #include "holiday_road.h"
  #include "oPrint.h"
+
 
 
 
@@ -47,9 +50,13 @@ void setup()
   delay(5000);
 
   request.port = 80;
+  mongo_request.port = 80;
   request.hostname = "things.ubidots.com";
+  mongo_request.hostname = "kbowerma1-test.apigee.net";
   Serial.begin(9600);
   sensor.begin();
+
+
 
   Particle.variable("devices",deviceCount);
   Particle.variable("m1pct",M1PCT);
@@ -389,14 +396,41 @@ void temperatureJob() {
         if (gotTemp < -195 ) continue;
         Serial << "gotTemp() = "  << i << " " << gotTemp << endl;
         request.body = formatTempToBody(gotTemp, i);
+        //mongo_request.body = formatTempToBody(gotTemp, i);
+        //mongo_request.body = String("{device: holiday_road, sensor: brd,");
+        mongo_request.body = String("{temp: ");
+        mongo_request.body += String(gotTemp);
+        mongo_request.body += String(",device: \"holiday_road\", sensor: \"board\", time: \"");
+
+        time_t time = Time.now();
+        Time.format(time, TIME_FORMAT_ISO8601_FULL);
+        mongo_request.body += Time.timeStr();  //  Fri Feb 12 21:31:15 2016
+        //mongo_request.body += Time.format(time, '%Y-%m-%dT%H:%M:%S%z');
+        //mongo_request.body += String(Time.format(time, TIME_FORMAT_ISO8601_FULL));
+        mongo_request.body += String("\", epoch: ");
+        mongo_request.body += time;
+        mongo_request.body += String(" }");
       //  if (mycounter % PUSHFREQ == 0  && PUSHTOUBIFLAG == 1 ) {
        if (mycounter % PUSHFREQ == 0  && PUSHTOUBIFLAG == 1 ) {
             String mypath = String("/api/v1.6/variables/");
             mypath.concat(ubivar[i]);
             mypath.concat("/values");
-            Serial << "going to push "<< request.body << " to " << mypath << endl;
+            //repeat for Mongo set up the path
+            //String mongopath = String("/mongolab/temp?apiKey=wdFyLYviCDR8g4EgyCi7oCgyyqrAyqMw");
+            String mongopath = String(MONGOHOLIDAYPATH);
+
+
+            //Serial << "going to push "<< request.body << " to " << mypath << endl;
             request.path = mypath;
+            mongo_request.path = mongopath;
+
             http.post(request, response, headers);
+            http.post(mongo_request, mongo_response, mongo_headers);
+
+            Serial << "appigee response \n " << mongo_response.status << endl;
+
+
+
             if( debug ) Serial << "http body: " << request.body << endl;
 
             Serial << " Did we reboot?    I hope not ";
