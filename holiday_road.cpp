@@ -10,7 +10,7 @@
 * 11.24.2015  Trying to get timer for moisture checker, kills encoder #3
 *             Switch to do every 7200 cycles seems to be stable (v.0.8.16)
 * 2.12.2016   Added mongolab call (hack) via apigee,   need to clean it up into another function
-* 2.24.2016   gotta move the keys out so I can put it on github.
+* 2.24.2016   gotta move the keys out so I can put it on github.  DONE see bowermanKeys.h in lib
 * purpose:
 *   1.  uses hardcoded address in array instead of calling by index.
 *   2.  fix getting, prinint and pushing temp values when they are disconnected (-196)
@@ -60,6 +60,8 @@ void setup()
 
   Particle.variable("devices",deviceCount);
   Particle.variable("m1pct",M1PCT);
+  Particle.variable("m1Desc",m1Desc);
+  Particle.variable("temp1",TEMP1VAL);
   Particle.variable("version",MYVERSION);
   Particle.variable("file",FILENAME);
   Particle.function("q", queryDevices);
@@ -393,6 +395,7 @@ void temperatureJob() {
     sensor.requestTemperatures();  // get all the tempratures first to speed up, moved up from getTemp()
     for (int i =0; i < deviceCount; i++ ) {
         gotTemp = sensor.getTempF(*deviceAddressArray[i]);
+        TEMP1VAL = gotTemp;   // set the value to be used by the particle.variable
         if (gotTemp < -195 ) continue;
         Serial << "gotTemp() = "  << i << " " << gotTemp << endl;
         request.body = formatTempToBody(gotTemp, i);

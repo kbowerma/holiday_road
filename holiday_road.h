@@ -3,7 +3,7 @@
 #define UBIVARSIZE 24
 #define PUSHFREQ 300
 #define FILENAME "holiday_road"
-#define MYVERSION "0.8.21c"
+#define MYVERSION "0.8.23a"
 #define GETTEMPFEQ 15  // both PUSHFREQ and GETTEMPFEQ have to be true to the cycle count to push to ubidots.
 #define PUSHTOUBIFLAG 1
 #define M1 A6
@@ -28,6 +28,8 @@ bool debug = true;
   int encoderA = A0;
   int encoderB = A1;
   int M1PCT = 0;
+  String m1Desc = "Moring Glory";
+  int TEMP1VAL = 0;
   int mydelay = 250;
   int relay = D3;
   float temperature = 0.0;
