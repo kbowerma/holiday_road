@@ -3,7 +3,7 @@
 #define UBIVARSIZE 24
 #define PUSHFREQ 300
 #define FILENAME "holiday_road"
-#define MYVERSION "0.8.23a"
+#define MYVERSION "0.8.25"
 #define GETTEMPFEQ 15  // both PUSHFREQ and GETTEMPFEQ have to be true to the cycle count to push to ubidots.
 #define PUSHTOUBIFLAG 1
 #define M1 A6
@@ -39,6 +39,7 @@ bool debug = true;
   volatile bool B_set = false;
   volatile int encoderPos = 0;
 
+//UBIDOTS
   http_header_t headers[] = {
         { "Content-Type", "application/json" },
         { "X-Auth-Token" , TOKEN },
@@ -46,12 +47,24 @@ bool debug = true;
   };
   http_request_t request;
   http_response_t response;
+
+// MONGO
   http_header_t mongo_headers[] = {
         { "Content-Type", "application/json" },
       { NULL, NULL } // NOTE: Always terminate headers will NULL
   };
   http_request_t mongo_request;
   http_response_t mongo_response;
+
+  // sailpipe
+    http_header_t sailpipe_headers[] = {
+    //  { "Content-Type", "application/json" },
+    //  { "Accept" , "application/json" },
+    { "Accept" , "*/*"},
+    { NULL, NULL } // NOTE: Always terminate headers will NULL
+};
+    http_request_t sailpipe_request;
+    http_response_t sailpipe_response;
 
 
 //Prototypes
