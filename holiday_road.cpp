@@ -51,8 +51,11 @@ void setup()
 
   request.port = 80;
   mongo_request.port = 80;
+  sailpipe_request.port = 80;
   request.hostname = "things.ubidots.com";
   mongo_request.hostname = "kbowerma1-test.apigee.net";
+  sailpipe_request.hostname = "sailpipe.herokuapp.com";
+
   Serial.begin(9600);
   sensor.begin();
 
@@ -413,6 +416,12 @@ void temperatureJob() {
         mongo_request.body += String("\", epoch: ");
         mongo_request.body += time;
         mongo_request.body += String(" }");
+
+
+      //sailpipe  too frequent every 3 seconds here.
+
+
+
       //  if (mycounter % PUSHFREQ == 0  && PUSHTOUBIFLAG == 1 ) {
        if (mycounter % PUSHFREQ == 0  && PUSHTOUBIFLAG == 1 ) {
             String mypath = String("/api/v1.6/variables/");
@@ -432,6 +441,9 @@ void temperatureJob() {
 
             Serial << "appigee response \n " << mongo_response.status << endl;
 
+            //sailpipe
+            sailpipe_request.path = String("/device/create?type=cron_data&desc=board_temp&name=holiday_road&data=" + String(TEMP1VAL) );
+            http.get(sailpipe_request, sailpipe_response, sailpipe_headers);
 
 
             if( debug ) Serial << "http body: " << request.body << endl;

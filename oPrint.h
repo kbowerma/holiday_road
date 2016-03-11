@@ -138,5 +138,14 @@
      displayMode = 4;  // this works but I need to set the encoder postion too
      encoderPos = 4;
      Particle.publish("moisture",  String(M1PCT));
+     //sailpipe
+     sailpipe_request.path = String("/device/create?type=cron_data&desc=moisture&name=holiday_road&data=" + String(M1PCT) );
+     http.get(sailpipe_request, sailpipe_response, sailpipe_headers);
+  /* DEBUG
+           Particle.publish("request",  String(sailpipe_request.hostname));
+            Particle.publish("path",  String(sailpipe_request.path));
+           Particle.publish("response",  String(sailpipe_response.body));
+           */
+
 
   }
