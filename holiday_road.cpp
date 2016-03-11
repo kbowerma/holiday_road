@@ -54,7 +54,7 @@ void setup()
   sailpipe_request.port = 80;
   request.hostname = "things.ubidots.com";
   mongo_request.hostname = "kbowerma1-test.apigee.net";
-  sailpipe_request.hostname = "sailpipe-dev.herokuapp.com";
+  sailpipe_request.hostname = "sailpipe.herokuapp.com";
 
   Serial.begin(9600);
   sensor.begin();
