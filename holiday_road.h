@@ -3,7 +3,7 @@
 #define UBIVARSIZE 24
 #define PUSHFREQ 300
 #define FILENAME "holiday_road"
-#define MYVERSION "0.8.25d"
+#define MYVERSION "0.8.25e"
 #define GETTEMPFEQ 15  // both PUSHFREQ and GETTEMPFEQ have to be true to the cycle count to push to ubidots.
 #define PUSHTOUBIFLAG 1
 #define M1 A6
