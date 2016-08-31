@@ -11,6 +11,7 @@
 *             Switch to do every 7200 cycles seems to be stable (v.0.8.16)
 * 2.12.2016   Added mongolab call (hack) via apigee,   need to clean it up into another function
 * 2.24.2016   gotta move the keys out so I can put it on github.  DONE see bowermanKeys.h in lib
+* 8.31.2016   Publish ipaddress at startup (v0.8.25.d)
 * purpose:
 *   1.  uses hardcoded address in array instead of calling by index.
 *   2.  fix getting, prinint and pushing temp values when they are disconnected (-196)
@@ -88,6 +89,12 @@ void setup()
 
   attachInterrupt(encoderA, doEncoderA, CHANGE);
   attachInterrupt(encoderB, doEncoderB, CHANGE);
+
+  IPAddress myIP = WiFi.localIP();
+  String ipStr = String(myIP[0])+"."+String(myIP[1])+"."+String(myIP[2])+"."+String(myIP[3]);
+  Particle.publish("LocalIP", ipStr, 60,PRIVATE);
+  String myVersion = System.version().c_str();
+  Particle.publish("Version", myVersion, 60,PRIVATE);
 
 }
 
