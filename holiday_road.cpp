@@ -94,8 +94,11 @@ void setup()
   String ipStr = String(myIP[0])+"."+String(myIP[1])+"."+String(myIP[2])+"."+String(myIP[3]);
   Particle.publish("LocalIP", ipStr, 60,PRIVATE);
   String myVersion = System.version().c_str();
+  delay(2000);  // can only publish 4 per second
   Particle.publish("Version", myVersion, 60,PRIVATE);
+  Particle.publish("SSID", String( WiFi.SSID()), 60, PRIVATE);
   Particle.publish("rssi", String( WiFi.RSSI()), 60, PRIVATE);
+
 
 
 }
